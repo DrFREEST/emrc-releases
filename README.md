@@ -1,6 +1,6 @@
 # EMRC 릴리스
 
-**EMRC (Elder Mabinogi Remote Controller)** 실행 파일을 배포하는 저장소입니다. 소스 코드는 없습니다.
+**EMRC (Elder Mobinogi Remote Controller)** 실행 파일을 배포하는 저장소입니다. 소스 코드는 없습니다.
 
 마비노기 모바일 PC 클라이언트의 **게임 공식 AI 커넥터**만 써서 채집·가공·제작을 자동으로 돌리는 앱입니다. 패킷 캡처, 메모리 읽기, 화면 매크로는 쓰지 않습니다.
 
