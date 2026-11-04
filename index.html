@@ -438,7 +438,7 @@
       if (!r.ok) {
         const why = await r.json().then((j) => j.error).catch(() => "");
         const told = { captcha: "사람 확인을 통과하지 못했습니다. 새로고침 뒤 다시 확인해 주세요.", size: "첨부한 기록이 너무 큽니다.",
-          fields: "내용이나 길이를 다시 확인해 주세요." }[why];
+          fields: "내용이나 길이를 다시 확인해 주세요." }[String(why).split(":")[0]];
         throw new Error((told ? told + " " : "") + `(오류 ${r.status}${why ? " · " + why : ""})`);
       }
       try { localStorage.setItem("emrc-fb-at", String(Date.now())); } catch { /* private mode */ }
