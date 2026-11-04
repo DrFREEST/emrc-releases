@@ -288,7 +288,7 @@
           <li>EMRC 버전 (도움말 &gt; EMRC 정보, 또는 화면 맨 아래)</li>
           <li>무엇을 하던 중, 언제(날짜·시각) 어떻게 됐는지</li>
           <li>그때 대기열에 무엇이 있었는지</li>
-          <li>그 시각 앞뒤의 기록(emrc.log) 일부</li>
+          <li>기록 파일(emrc.log)을 첨부해 주시면 가장 좋습니다</li>
         </ul>
         <h3>보낸 내용은</h3>
         <ul>
@@ -311,12 +311,20 @@
           <textarea name="message" id="message" maxlength="4000" required placeholder="예) 11월 4일 오후 3시쯤 통나무 300개를 채집하다 40개쯤에서 멈추고 다음 항목으로 넘어가지 않았습니다."></textarea>
         </label>
         <div class="count"><span id="cnt">0</span> / 4000</div>
-        <label class="f" id="logbox">기록(emrc.log) 일부 <span class="hint">선택 · 버그 제보일 때 · 최대 20,000자</span>
-          <textarea name="log" id="log" maxlength="20000" style="min-height:120px;font-family:ui-monospace,Consolas,monospace;font-size:13px"
-            placeholder="2026-11-04 15:02:11,123 INFO emrc: job execute_gathering ..."></textarea>
-          <span class="hint">탐색기 주소창에 <b>%APPDATA%\EMRC</b>를 넣으면 emrc.log가 있습니다. 메모장으로 열어 일이 생긴 시각 앞뒤 50줄쯤을 붙여 주세요.
-            기록에는 칭호·서버 이름이 들어 있을 수 있습니다.</span>
-        </label>
+        <div class="f" id="logbox" style="display:grid;gap:8px;font-size:14px;font-weight:600">
+          <div>기록 파일(emrc.log) 첨부 <span class="hint" style="font-weight:400;color:var(--dim);font-size:13px">선택 · 버그 제보일 때 · 있으면 원인을 훨씬 빨리 찾습니다</span></div>
+          <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center">
+            <label class="btn btn-line" style="padding:9px 14px;font-size:14px" for="logfile">파일 고르기</label>
+            <input type="file" id="logfile" accept=".log,.txt,text/plain" style="position:absolute;opacity:0;width:1px;height:1px">
+            <button type="button" class="btn btn-line" style="padding:9px 14px;font-size:14px" id="copypath">경로 복사</button>
+            <span id="logname" style="font-weight:400;color:var(--muted);font-size:13px">고른 파일 없음</span>
+          </div>
+          <ol style="margin:0;padding-left:18px;font-weight:400;color:var(--dim);font-size:13px;line-height:1.6">
+            <li><b style="color:var(--muted)">경로 복사</b>를 누르고 <b style="color:var(--muted)">파일 고르기</b>를 누릅니다.</li>
+            <li>열린 창 아래쪽 <b style="color:var(--muted)">파일 이름</b> 칸에 붙여 넣고(Ctrl+V) <b style="color:var(--muted)">열기</b>를 누릅니다.</li>
+            <li>파일의 마지막 3,000줄만 보냅니다. 기록에는 칭호·서버 이름과 작업 내역이 들어 있고, PIN·웹후크 주소는 들어 있지 않습니다.</li>
+          </ol>
+        </div>
         <div class="two">
           <label class="f">EMRC 버전 <span class="hint">선택</span><input type="text" name="version" maxlength="20" placeholder="예) 1.0.57"></label>
           <label class="f">답장 받을 연락처 <span class="hint">선택 · 디스코드 아이디나 이메일</span><input type="text" name="contact" maxlength="200"></label>
@@ -325,7 +333,7 @@
         <div class="trap" aria-hidden="true"><label>홈페이지<input type="text" name="website" tabindex="-1" autocomplete="off"></label></div>
         <button class="btn btn-main" type="submit" id="send">보내기</button>
         <div class="status" id="status" role="status" aria-live="polite"></div>
-        <p class="priv">보낸 내용(종류·내용·버전·연락처·기록)은 개발자의 의견함(Supabase)에 저장되고, 개발자만 볼 수 있습니다.
+        <p class="priv">보낸 내용(종류·내용·버전·연락처·첨부한 기록)은 개발자의 의견함(Supabase)에 저장되고, 개발자만 볼 수 있습니다.
           도배를 막으려고 Cloudflare Turnstile로 사람인지 확인하고, 보낸 곳의 IP는 되돌릴 수 없는 해시로만 남깁니다.</p>
       </form>
     </div>
@@ -363,7 +371,27 @@
   const send = document.getElementById("send");
   msg.addEventListener("input", () => { document.getElementById("cnt").textContent = msg.value.length; });
   const logbox = document.getElementById("logbox");
-  const showLog = () => { logbox.style.display = form.kind.value === "bug" ? "" : "none"; };
+  // the attached log: read here, only its last lines are sent (the file can be a few MB)
+  const LOG_LINES = 3000, LOG_CHARS = 300000, LOG_PATH = "%APPDATA%\\EMRC\\emrc.log";
+  let logText = "";
+  const logname = document.getElementById("logname");
+  document.getElementById("copypath").addEventListener("click", async () => {
+    try { await navigator.clipboard.writeText(LOG_PATH); say("경로를 복사했습니다. 파일 고르기 창의 파일 이름 칸에 붙여 넣어 주세요.", "ok"); }
+    catch { say("복사하지 못했습니다. 파일 이름 칸에 " + LOG_PATH + " 를 직접 적어 주세요.", "err"); }
+  });
+  document.getElementById("logfile").addEventListener("change", async (e) => {
+    const file = e.target.files && e.target.files[0];
+    logText = "";
+    if (!file) { logname.textContent = "고른 파일 없음"; return; }
+    if (file.size > 50 * 1024 * 1024) { logname.textContent = "파일이 너무 큽니다(50MB 넘음)"; return; }
+    const all = (await file.text()).split(/\r?\n/);
+    let tail = all.slice(-LOG_LINES).join("\n");
+    if (tail.length > LOG_CHARS) tail = tail.slice(-LOG_CHARS);
+    logText = tail;
+    const lines = Math.min(all.length, LOG_LINES);
+    logname.textContent = `${file.name} · 마지막 ${lines.toLocaleString("ko-KR")}줄을 함께 보냅니다`;
+  });
+  const showLog = () => { logbox.style.display = form.kind.value === "bug" ? "grid" : "none"; };
   form.addEventListener("change", showLog); showLog();
   const say = (text, kind) => { status.textContent = text; status.className = "status " + (kind || ""); };
   const lastSent = () => { try { return Number(localStorage.getItem("emrc-fb-at")) || 0; } catch { return 0; } };
@@ -403,13 +431,14 @@
           kind: data.get("kind"), message, token,
           version: String(data.get("version") || "").trim(),
           contact: String(data.get("contact") || "").trim(),
-          log: data.get("kind") === "bug" ? String(data.get("log") || "").trim() : "",
+          log: data.get("kind") === "bug" ? logText : "",
         }),
       });
       if (r.status === 429) { say("지금은 보낼 수 있는 횟수를 넘었습니다. 잠시 뒤에 다시 보내 주세요. 같은 내용은 하루에 한 번만 받습니다.", "err"); return; }
       if (!r.ok) throw new Error(String(r.status));
       try { localStorage.setItem("emrc-fb-at", String(Date.now())); } catch { /* private mode */ }
       form.reset(); showLog(); document.getElementById("cnt").textContent = "0";
+      logText = ""; logname.textContent = "고른 파일 없음";
       say("보냈습니다. 고맙습니다! 꼼꼼히 읽어 보겠습니다.", "ok");
     } catch (err) {
       say("보내지 못했습니다. 잠시 뒤 다시 시도해 주세요. 계속 안 되면 GitHub 이슈로 남겨 주셔도 됩니다.", "err");
