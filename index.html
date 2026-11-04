@@ -435,13 +435,20 @@
         }),
       });
       if (r.status === 429) { say("지금은 보낼 수 있는 횟수를 넘었습니다. 잠시 뒤에 다시 보내 주세요. 같은 내용은 하루에 한 번만 받습니다.", "err"); return; }
-      if (!r.ok) throw new Error(String(r.status));
+      if (!r.ok) {
+        const why = await r.json().then((j) => j.error).catch(() => "");
+        const told = { captcha: "사람 확인을 통과하지 못했습니다. 새로고침 뒤 다시 확인해 주세요.", size: "첨부한 기록이 너무 큽니다.",
+          fields: "내용이나 길이를 다시 확인해 주세요." }[why];
+        throw new Error((told ? told + " " : "") + `(오류 ${r.status}${why ? " · " + why : ""})`);
+      }
       try { localStorage.setItem("emrc-fb-at", String(Date.now())); } catch { /* private mode */ }
       form.reset(); showLog(); document.getElementById("cnt").textContent = "0";
       logText = ""; logname.textContent = "고른 파일 없음";
       say("보냈습니다. 고맙습니다! 꼼꼼히 읽어 보겠습니다.", "ok");
     } catch (err) {
-      say("보내지 못했습니다. 잠시 뒤 다시 시도해 주세요. 계속 안 되면 GitHub 이슈로 남겨 주셔도 됩니다.", "err");
+      // what went wrong, so a report of it can be traced (a network failure has no code)
+      const detail = err && err.message && err.message.startsWith("(") || /오류 \d/.test(err && err.message) ? err.message : "(연결 실패)";
+      say("보내지 못했습니다. " + detail + " 잠시 뒤 다시 시도해 주세요. 계속 안 되면 GitHub 이슈로 남겨 주셔도 됩니다.", "err");
     } finally {
       token = ""; if (widget !== null) turnstile.reset(widget);       // each message needs a fresh check
       send.disabled = !ready();
