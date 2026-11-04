@@ -1,0 +1,15 @@
+# Supabase pauses a free project after 7 days with no requests: the landing page's feedback box would then fail.
+# A harmless call every 3 days keeps it awake (ping() only returns 1; it reads no table).
+name: keep the feedback box awake
+on:
+  schedule:
+    - cron: "17 3 */3 * *"
+  workflow_dispatch:
+permissions: {}
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          curl -fsS -X POST "https://kbcgaelahwhdjpanzvvq.supabase.co/rest/v1/rpc/ping" \
+            -H "apikey: sb_publishable_91GxTPPyYxGppHyz09K_Uw_V3faFSpN" -H "Content-Type: application/json" -d "{}"

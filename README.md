@@ -11,7 +11,7 @@
 [![최신 버전](https://img.shields.io/github/v/release/DrFREEST/emrc-releases?label=%EC%B5%9C%EC%8B%A0%20%EB%B2%84%EC%A0%84)](https://github.com/DrFREEST/emrc-releases/releases/latest)
 ![Windows](https://img.shields.io/badge/Windows-10%20%2F%2011-0078d4)
 
-**[⬇ EMRC.exe 받기](https://github.com/DrFREEST/emrc-releases/releases/latest)** · 설치 없이 실행
+**[⬇ EMRC.exe 받기](https://github.com/DrFREEST/emrc-releases/releases/latest)** · 설치 없이 실행 · [소개 페이지](https://drfreest.github.io/emrc-releases/) · [의견 보내기](https://drfreest.github.io/emrc-releases/#feedback)
 
 <img src="images/queue.png" alt="작업 대기열: 목표 제작 묶음과 채집·가공 항목" width="900">
 
@@ -30,6 +30,7 @@
 - [업데이트와 파일 확인](#업데이트와-파일-확인)
 - [내 정보는 어디에](#내-정보는-어디에)
 - [자주 묻는 질문](#자주-묻는-질문)
+- [의견 보내기](#의견-보내기)
 
 ## AI 구독 없이 쓰는 AI 커넥터
 
@@ -44,7 +45,7 @@ EMRC는 AI를 거치지 않고, 게임 폴더의 커넥터 프로그램(`Mabinog
 **EMRC의 핵심 기능입니다.** 재료가 모자란 레시피에서 **재료부터**를 누르면, 모자란 재료를 거꾸로 따라가 **채집 → 가공 → 제작** 순서를 한 번에 짜서 한 묶음으로 넣고, 목표에 닿을 때까지 돌립니다.
 
 <div align="center">
-<img src="images/plan.png" alt="목표 제작 계획: 숏소드Z를 만들기 위해 운철괴·최상급 목재 가공을 먼저 하는 순서와 예상 날개" width="760">
+<img src="images/plan_card.png" alt="목표 제작 계획: 숏소드Z를 만들기 위해 운철괴·최상급 목재 가공을 먼저 하는 순서와 예상 날개" width="760">
 </div>
 
 - **예) 삶은 달걀 200개:** 달걀·물이 든 병 채집을 앞에 넣고, 다 모이면 삶은 달걀을 시설이 허락하는 만큼 묶어 한 번에 만듭니다.
@@ -180,6 +181,10 @@ EMRC는 AI를 거치지 않고, 게임 폴더의 커넥터 프로그램(`Mabinog
 
 대기열이 일하는 중에는 설치하지 않습니다. `EMRC.exe`가 Program Files처럼 쓰기 권한이 없는 폴더에 있으면 파일을 바꾸지 못합니다. 바탕 화면이나 문서 폴더에 두고 써 주세요.
 </details>
+
+## 의견 보내기
+
+버그, 있었으면 하는 기능, 궁금한 점은 [소개 페이지의 의견 보내기](https://drfreest.github.io/emrc-releases/#feedback)로 남겨 주세요. 로그인 없이 보낼 수 있고, 보낸 내용은 개발자만 봅니다.
 
 ---
 
