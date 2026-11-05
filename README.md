@@ -2,7 +2,7 @@
 
 # 에린 모비노기 리모콘 (EMRC)
 
-**Erin Mobinogi Remote Controller**
+**Erinn Mobinogi Remote Controller**
 
 마비노기 모바일의 채집 → 가공 → 제작을 대기열에 줄 세워 두면 알아서 차례로 돌립니다.<br>
 **만들 것만 정하면 재료부터 끝까지**, 끊겨도 알아서 이어서, 폰으로도 확인합니다.<br>
